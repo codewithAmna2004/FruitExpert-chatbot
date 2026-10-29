@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruits Expert Chatbot</title>
+</head>
+<body>
+    
+<form onsubmit="fruitBot(); return false;">
+<h1> Fruits Expert Chatbot</h1>
+<label for="hello">Welcome</label>
+<br>
+<input type="text" name="Query" id="hello" placeholder="write your query here"/>
+<button type="submit">Send</button>
+</form>
+<div>  </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+function fruitBot(){
+const query= document.querySelector("#hello").value;
+console.log(query);
+const divRef=document.querySelector("div");
+divRef.innerHTML=`<p>Thinking</p>`;
+
+const Response=axios.post(
+"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+{
+    contents: [
+      {
+        parts: [
+          {
+            text:`You are a fruit specialist AI. You ONLY answer questions about fruits. 
+If user asks about anything else,  simply say: 
+"Sorry, I am a fruit specialist AI. I can only give you knowledge about fruits. Please ask any question about fruits only."
+ Question: ${query}`
+          },
+        ],
+      },
+    ],
+},
+{
+    headers:{
+        "Content-Type":"application/json",
+        "x-goog-api-key":"AIzaSyAXlrsGjKL9dNLAhhofbO2r9YKabo9bcEM"
+},
+});
+
+Response
+
+.then((data)=>{
+let Ans=data.data.candidates[0].content.parts[0].text;
+divRef.innerHTML=`<p>${Ans}</p>`;
+console.log(data);
+})
+
+.catch((error)=>{
+
+divRef.innerHTML=`<p>Sorry there was an error please try again</p>`
+console.log(error);
+})
+}
+</script>
+</body>
+</html>
